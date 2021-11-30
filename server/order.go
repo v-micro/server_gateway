@@ -15,7 +15,9 @@ func (o Order) Get(ctx echo.Context) error {
 	commonResponse := comutil.Response{}
 
 	//rpc 调用
-	response,err := serverorder.GetClient().Ping.Get(context.Background(),&serverorder.GetRequest{})
+	client := serverorder.GetClient()
+	defer client.Conn.Close()
+	response,err := client.Ping.Get(context.Background(),&serverorder.GetRequest{})
 	if err != nil {
 		return ctx.JSON(400, fmt.Sprintf("error: %s",err.Error()))
 	}
